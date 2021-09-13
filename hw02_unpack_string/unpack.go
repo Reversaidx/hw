@@ -11,7 +11,7 @@ var ErrInvalidString = errors.New("invalid string")
 
 func Unpack(srcStr string) (string, error) {
 	var result strings.Builder
-	var tmp = make([]rune, len(srcStr))
+	tmp := make([]rune, len(srcStr))
 	for index, str := range srcStr {
 		tmp[index] = str
 	}
