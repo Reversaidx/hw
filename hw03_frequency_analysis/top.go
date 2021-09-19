@@ -12,8 +12,8 @@ type Words struct {
 
 func Top10(s string) (returnList []string) {
 	var tmpS []string
-	//var wordS []Words
-	returnCoint := 10
+
+	returnCount := 10
 
 	tmpM := make(map[string]int)
 	tmpS = strings.Fields(s)
@@ -21,16 +21,17 @@ func Top10(s string) (returnList []string) {
 		tmpM[value]++
 	}
 	// do struct to sort
-	wordS:=make([]Words,len(tmpM))
+	wordS := make([]Words, len(tmpM))
+	i := 0
 	for key, value := range tmpM {
-		wordS = append(wordS, Words{
+		wordS[i] = Words{
 			Word: key,
 			Freq: value,
-		})
+		}
+		i++
 	}
-
-	if len(wordS) < returnCoint {
-		returnCoint = len(wordS)
+	if len(wordS) < returnCount {
+		returnCount = len(wordS)
 	}
 
 	sort.SliceStable(wordS, func(i, j int) bool {
@@ -40,7 +41,7 @@ func Top10(s string) (returnList []string) {
 		return wordS[i].Word < wordS[j].Word
 	})
 
-	for i := 0; i < returnCoint; i++ {
+	for i := 0; i < returnCount; i++ {
 		returnList = append(returnList, wordS[i].Word)
 	}
 	return returnList
