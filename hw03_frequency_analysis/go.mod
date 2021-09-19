@@ -1,4 +1,4 @@
-module hw03frequencyanalysis
+module hw03_frequencyanalysis
 
 go 1.17
 
