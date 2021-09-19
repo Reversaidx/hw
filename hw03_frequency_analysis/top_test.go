@@ -80,3 +80,23 @@ func TestTop10(t *testing.T) {
 		}
 	})
 }
+
+func TestTop10ShortTest(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected []string
+	}{
+		{input: "cat and dog, one dog,two cats and one man", expected: []string{
+			"and", "one", "cat", "cats", "dog,", "dog,two", "man",
+		}},
+		{input: "Ворую помидорки 35, тест тест", expected: []string{"тест", "35,", "Ворую", "помидорки"}},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.input, func(t *testing.T) {
+			result := Top10(tc.input)
+			require.Equal(t, tc.expected, result)
+		})
+	}
+}
