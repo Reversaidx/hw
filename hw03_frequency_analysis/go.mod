@@ -1,4 +1,4 @@
-module hw03_frequencyanalysis
+module github.com/Reversaidx/hw/hw03_frequency_analysis
 
 go 1.17
 
