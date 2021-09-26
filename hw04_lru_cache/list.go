@@ -57,8 +57,8 @@ func (l *list) PushFront(v interface{}) *ListItem {
 func (l *list) Remove(i *ListItem) {
 
 	if i.Prev != nil && i.Next != nil {
-		i.Prev.Next = i.Next.Prev
-		i.Next.Prev = i.Prev.Next
+		i.Prev.Next = i.Next
+		i.Next.Prev = i.Prev
 	} else if i.Prev == nil && i.Next != nil {
 		i.Next.Prev = nil
 		l.front = i.Next
