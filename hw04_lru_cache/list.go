@@ -58,7 +58,7 @@ func (l *list) PushFront(v interface{}) *ListItem {
 }
 
 func (l *list) Remove(i *ListItem) {
-	i.Value = nil
+
 	if i.Prev != nil && i.Next != nil {
 		i.Prev.Next = i.Next
 		i.Next.Prev = i.Prev
@@ -76,8 +76,9 @@ func (l *list) Remove(i *ListItem) {
 }
 
 func (l *list) MoveToFront(i *ListItem) {
+	tmp := i.Value
 	l.Remove(i)
-	l.PushFront(i.Value)
+	l.PushFront(tmp)
 }
 
 type list struct {
