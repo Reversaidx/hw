@@ -58,7 +58,6 @@ func (l *list) PushFront(v interface{}) *ListItem {
 }
 
 func (l *list) Remove(i *ListItem) {
-
 	if i.Prev != nil && i.Next != nil {
 		i.Prev.Next = i.Next
 		i.Next.Prev = i.Prev
@@ -76,9 +75,22 @@ func (l *list) Remove(i *ListItem) {
 }
 
 func (l *list) MoveToFront(i *ListItem) {
-	tmp := i.Value
-	l.Remove(i)
-	l.PushFront(tmp)
+	if i.Prev != nil && i.Next != nil {
+		i.Prev.Next = i.Next
+		i.Next.Prev = i.Prev
+	} else if i.Prev == nil && i.Next != nil { // already front
+		return
+	} else if i.Prev != nil && i.Next == nil { // back element
+		i.Prev.Next = nil
+		l.back = i.Prev
+	} else if i.Prev == nil && i.Next == nil { // one element, nothing to do
+		return
+	}
+
+	l.front.Prev = i
+	i.Next = l.front
+	i.Prev = nil
+	l.front = i
 }
 
 type list struct {

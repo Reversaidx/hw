@@ -9,18 +9,14 @@ type Cache interface {
 }
 
 func (c *lruCache) Set(key Key, value interface{}) bool {
-
-	_, ok := c.items[key]
-	if ok {
+	if _, ok := c.items[key]; ok {
 		List.MoveToFront(c.queue, c.items[key])
 		c.items[key].Value = value
-		c.itemsKey[c.items[key]] = key
 		return true
 	} else {
 		if c.queue.Len()+1 > c.capacity {
 			delete(c.items, c.itemsKey[c.queue.Back()])
 			List.Remove(c.queue, c.queue.Back())
-
 		}
 		c.items[key] = List.PushFront(c.queue, value)
 		c.itemsKey[c.queue.Front()] = key
@@ -33,7 +29,6 @@ func (c *lruCache) Get(key Key) (interface{}, bool) {
 	if !ok {
 		return nil, false
 	}
-	delete(c.itemsKey, value)
 	List.PushFront(c.queue, value)
 	c.itemsKey[c.queue.Front()] = key
 	return c.items[key].Value, true
