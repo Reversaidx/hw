@@ -58,16 +58,17 @@ func (l *list) PushFront(v interface{}) *ListItem {
 }
 
 func (l *list) Remove(i *ListItem) {
-	if i.Prev != nil && i.Next != nil {
+	switch {
+	case i.Prev != nil && i.Next != nil:
 		i.Prev.Next = i.Next
 		i.Next.Prev = i.Prev
-	} else if i.Prev == nil && i.Next != nil {
+	case i.Prev == nil && i.Next != nil:
 		i.Next.Prev = nil
 		l.front = i.Next
-	} else if i.Prev != nil && i.Next == nil {
+	case i.Prev != nil && i.Next == nil:
 		i.Prev.Next = nil
 		l.back = i.Prev
-	} else if i.Prev == nil && i.Next == nil {
+	case i.Prev == nil && i.Next == nil:
 		l.back = nil
 		l.front = nil
 	}
@@ -75,18 +76,18 @@ func (l *list) Remove(i *ListItem) {
 }
 
 func (l *list) MoveToFront(i *ListItem) {
-	if i.Prev != nil && i.Next != nil {
+	switch {
+	case i.Prev != nil && i.Next != nil:
 		i.Prev.Next = i.Next
 		i.Next.Prev = i.Prev
-	} else if i.Prev == nil && i.Next != nil { // already front
+	case i.Prev == nil && i.Next != nil:
 		return
-	} else if i.Prev != nil && i.Next == nil { // back element
+	case i.Prev != nil && i.Next == nil:
 		i.Prev.Next = nil
 		l.back = i.Prev
-	} else if i.Prev == nil && i.Next == nil { // one element, nothing to do
+	case i.Prev == nil && i.Next == nil:
 		return
 	}
-
 	l.front.Prev = i
 	i.Next = l.front
 	i.Prev = nil

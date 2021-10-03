@@ -1,6 +1,7 @@
 package hw04lrucache
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -44,12 +45,14 @@ func TestList(t *testing.T) {
 
 		elems := make([]int, 0, l.Len())
 		for i := l.Front(); i != nil; i = i.Next {
+			fmt.Println(i.Value)
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
 		elems = nil
 		// reverse
 		for i := l.Back(); i != nil; i = i.Prev {
+			fmt.Println(i.Value)
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{50, 30, 10, 40, 60, 80, 70}, elems)
@@ -57,6 +60,7 @@ func TestList(t *testing.T) {
 
 		elems = nil
 		for i := l.Front(); i != nil; i = i.Next {
+			fmt.Println(i.Value)
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{70, 60, 40, 10, 30, 50}, elems)
@@ -71,6 +75,7 @@ func TestList(t *testing.T) {
 		l.Remove(l.Back()) // [10, 20, 30]
 		elems := make([]int, 0, l.Len())
 		for i := l.Front(); i != nil; i = i.Next {
+			fmt.Println(i.Value)
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{10, 20, 30}, elems)
@@ -78,9 +83,9 @@ func TestList(t *testing.T) {
 		l.Remove(l.Front()) // [20, 30,40]
 		elems = nil
 		for i := l.Front(); i != nil; i = i.Next {
+			fmt.Println(i.Value)
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{20, 30, 40}, elems)
-
 	})
 }

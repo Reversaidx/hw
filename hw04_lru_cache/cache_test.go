@@ -81,6 +81,7 @@ func TestCache(t *testing.T) {
 		require.Equal(t, 100, val)
 
 		wasInCache = c.Set("ddd", 400)
+		require.False(t, wasInCache)
 
 		val, ok = c.Get("aaa")
 		require.False(t, ok)
