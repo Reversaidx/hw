@@ -11,16 +11,16 @@ var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
 
 type Task func() error
 
-var ErrorLimit int64
-var ThreadLimit int
-var Tasks []Task
+var (
+	ErrorLimit int64
+	Tasks      []Task
+)
 
 // Run starts tasks in n goroutines and stops its work when receiving m errors from tasks.
 func Run(tasks []Task, n, m int) error {
 	// Place your code here.
 	Tasks = tasks
 	ErrorLimit = int64(m)
-	ThreadLimit = n
 	taskChan := make(chan Task)
 
 	var ec int64
@@ -28,22 +28,21 @@ func Run(tasks []Task, n, m int) error {
 	wg := &sync.WaitGroup{}
 
 	wg.Add(n)
-
-	go producer(taskChan, &ec)
 	for i := 0; i < n; i++ {
 		go consumer(taskChan, &ec, i, wg)
 	}
+	if err := producer(taskChan, &ec); err != nil {
+		return err
+	}
 	wg.Wait()
-
-	//<-done
 	return nil
 }
+
 func producer(task chan Task, ec *int64) error {
 	for _, t := range Tasks {
-		if *ec >= ErrorLimit {
-
+		if *ec >= ErrorLimit && ErrorLimit > 0 {
 			close(task)
-			//return ErrErrorsLimitExceeded
+			return ErrErrorsLimitExceeded
 		}
 		task <- t
 	}
@@ -52,7 +51,7 @@ func producer(task chan Task, ec *int64) error {
 	return nil
 }
 
-func consumer(task chan Task, ec *int64, i int, wg *sync.WaitGroup) error {
+func consumer(task chan Task, ec *int64, i int, wg *sync.WaitGroup) {
 	fmt.Printf("Thread: %v is running\n", i)
 	defer wg.Done()
 	for i := range task {
@@ -62,7 +61,5 @@ func consumer(task chan Task, ec *int64, i int, wg *sync.WaitGroup) error {
 			fmt.Println(err)
 		}
 	}
-	fmt.Printf("Thread: %v is Stopped without error\n", i)
-
-	return nil
+	fmt.Printf("Thread: %v is stopped \n", i)
 }
