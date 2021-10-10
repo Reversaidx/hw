@@ -51,6 +51,7 @@ func producer(task chan Task, ec *int64, tasks []Task, errorLimit int64, errChan
 
 	close(task)
 	doneChan <- true
+
 }
 
 func consumer(task chan Task, ec *int64, i int, wg *sync.WaitGroup) {
