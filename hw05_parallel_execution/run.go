@@ -11,18 +11,14 @@ var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
 
 type Task func() error
 
-var (
-	ErrorLimit int64
-	Tasks      []Task
-)
-
 // Run starts tasks in n goroutines and stops its work when receiving m errors from tasks.
 func Run(tasks []Task, n, m int) error {
 	// Place your code here.
-	Tasks = tasks
-	ErrorLimit = int64(m)
+	//var err error
+	errorLimit := int64(m)
 	taskChan := make(chan Task)
-
+	errChan := make(chan error)
+	doneChan := make(chan bool)
 	var ec int64
 
 	wg := &sync.WaitGroup{}
@@ -31,24 +27,35 @@ func Run(tasks []Task, n, m int) error {
 	for i := 0; i < n; i++ {
 		go consumer(taskChan, &ec, i, wg)
 	}
-	if err := producer(taskChan, &ec); err != nil {
+	go producer(taskChan, &ec, tasks, errorLimit, errChan, doneChan)
+	switch {
+
+	}
+
+	wg.Wait()
+
+	select {
+	case <-doneChan:
+		return nil
+	case err := <-errChan:
 		return err
 	}
-	wg.Wait()
-	return nil
+
 }
 
-func producer(task chan Task, ec *int64) error {
-	for _, t := range Tasks {
-		if *ec >= ErrorLimit && ErrorLimit > 0 {
+func producer(task chan Task, ec *int64, tasks []Task, errorLimit int64, errChan chan error, doneChan chan bool) {
+	for _, t := range tasks {
+		if atomic.LoadInt64(ec) >= errorLimit && errorLimit > 0 {
 			close(task)
-			return ErrErrorsLimitExceeded
+			errChan <- ErrErrorsLimitExceeded
+			return
 		}
 		task <- t
 	}
 
 	close(task)
-	return nil
+	doneChan <- true
+
 }
 
 func consumer(task chan Task, ec *int64, i int, wg *sync.WaitGroup) {
