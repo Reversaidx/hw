@@ -13,8 +13,6 @@ type Task func() error
 
 // Run starts tasks in n goroutines and stops its work when receiving m errors from tasks.
 func Run(tasks []Task, n, m int) error {
-	// Place your code here.
-	//var err error
 	errorLimit := int64(m)
 	taskChan := make(chan Task)
 	errChan := make(chan error)
@@ -29,7 +27,6 @@ func Run(tasks []Task, n, m int) error {
 	}
 	go producer(taskChan, &ec, tasks, errorLimit, errChan, doneChan)
 	switch {
-
 	}
 
 	wg.Wait()
@@ -40,7 +37,6 @@ func Run(tasks []Task, n, m int) error {
 	case err := <-errChan:
 		return err
 	}
-
 }
 
 func producer(task chan Task, ec *int64, tasks []Task, errorLimit int64, errChan chan error, doneChan chan bool) {
@@ -55,7 +51,6 @@ func producer(task chan Task, ec *int64, tasks []Task, errorLimit int64, errChan
 
 	close(task)
 	doneChan <- true
-
 }
 
 func consumer(task chan Task, ec *int64, i int, wg *sync.WaitGroup) {
