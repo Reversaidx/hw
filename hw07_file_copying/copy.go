@@ -34,7 +34,10 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if limit == 0 {
 		limit = srtSize
 	}
-	srt.Seek(offset, 0)
+	_,err=srt.Seek(offset, 0)
+	if err!=nil{
+		return err
+	}
 	fmt.Println(srtSize)
 	dst, err := os.Create(toPath)
 	if err != nil {
@@ -53,7 +56,6 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 		}
 	}
 	bar.Finish()
-	fmt.Println("kurwa")
 	// Place your code here.
 	return nil
 }

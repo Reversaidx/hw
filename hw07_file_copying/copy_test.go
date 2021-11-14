@@ -2,10 +2,11 @@ package main
 
 import (
 	"crypto/md5"
-	"github.com/stretchr/testify/require"
 	"io"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestCopy1(t *testing.T) {
