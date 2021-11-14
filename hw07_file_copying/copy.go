@@ -48,7 +48,9 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	bar.Set(pb.Bytes, true)
 	_, err = io.CopyN(dst, barReader, limit)
 	if err != nil {
-		return err
+		if !errors.Is(err, io.EOF) {
+			return err
+		}
 	}
 	bar.Finish()
 	fmt.Println("kurwa")
