@@ -34,8 +34,8 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if limit == 0 {
 		limit = srtSize
 	}
-	_,err=srt.Seek(offset, 0)
-	if err!=nil{
+	_, err = srt.Seek(offset, 0)
+	if err != nil {
 		return err
 	}
 	fmt.Println(srtSize)
