@@ -12,7 +12,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	code := RunCmd(os.Args[3:], env)
+	code := RunCmd(os.Args[2:], env)
 	if code != 0 {
 		os.Exit(code)
 	}

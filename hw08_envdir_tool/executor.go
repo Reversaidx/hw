@@ -1,15 +1,14 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 )
 
 // RunCmd runs a command + arguments (cmd) with environment variables from env.
 func RunCmd(cmdS []string, env Environment) (returnCode int) {
-	var ExitError exec.ExitError
-	cmd := exec.Command("/bin/bash", cmdS...)
+	cmd := exec.Command(cmdS[0], cmdS[1:]...) //nolint
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	envSlice := make([]string, len(env))
@@ -19,10 +18,14 @@ func RunCmd(cmdS []string, env Environment) (returnCode int) {
 		i++
 	}
 	cmd.Env = envSlice
+	// fmt.Println(cmd.String())
 	if err := cmd.Run(); err != nil {
-		if errors.As(err, ExitError) { //nolint
-			return err.(*exec.ExitError).ExitCode() //nolint
+		fmt.Println(err)
+
+		if exitError, ok := err.(*exec.ExitError); ok { //nolint
+			return exitError.ExitCode()
 		}
 	}
+
 	return 0
 }
