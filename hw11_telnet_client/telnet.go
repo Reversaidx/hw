@@ -19,47 +19,74 @@ type TelnetClient interface {
 	Receive() error
 }
 
-func NewTelnetClient(address string, timeout time.Duration, in io.ReadCloser, out io.Writer) TelnetClien {
+//type TelnetClientS struct{}
+//
+//func (TelnetClientS) Connect() error {
+//	//TODO implement me
+//	panic("implement me")
+//}
+//
+//func (TelnetClientS) Close() error {
+//	//TODO implement me
+//	panic("implement me")
+//}
+//
+//func (TelnetClientS) Send() error {
+//	//TODO implement me
+//	panic("implement me")
+//}
+//
+//func (TelnetClientS) Receive() error {
+//	//TODO implement me
+//	panic("implement me")
+//}
+
+func NewTelnetClient(address string, timeout time.Duration, in io.ReadCloser, out io.Writer) TelnetClient {
 	dialer := &net.Dialer{}
 	wg := &sync.WaitGroup{}
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	var client TelnetClient
-	conn, err := dialer.Dial("tcp", "127.0.0.1:4242")
-	stdin := stdinScan()
+	conn, err := dialer.Dial("tcp", address)
+	stdin := stdinScan(cancel)
 	if err != nil {
 		log.Fatal(err)
 	}
-	os.Stdout.WriteString("kurwa")
+	os.Stderr.WriteString(fmt.Sprintf("Connected to %v\n", address))
 	wg.Add(1)
 	go func() {
-		readRoutine(ctx, conn, wg)
+		Receive(ctx, conn, wg)
 		cancel()
 	}()
 
 	wg.Add(1)
 	go func() {
-		writeRoutine(ctx, conn, wg, stdin)
+		Send(ctx, conn, wg, stdin)
 	}()
 	wg.Wait()
 	// Place your code here.
 	return client
 }
 
-func stdinScan() chan string {
+func stdinScan(cancel context.CancelFunc) chan string {
 	out := make(chan string)
+
 	go func() {
 		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
+		for !scanner.Scan() {
 			out <- scanner.Text()
 		}
+		fmt.Println("Closing")
+		//TODO add EOF check
 		if scanner.Err() != nil {
+			fmt.Println("EOF??")
+			cancel()
 			close(out)
 		}
 	}()
 	return out
 }
 
-func readRoutine(ctx context.Context, conn net.Conn, wg *sync.WaitGroup) {
+func Receive(ctx context.Context, conn net.Conn, wg *sync.WaitGroup) error {
 	defer wg.Done()
 	scanner := bufio.NewScanner(conn)
 OUTER:
@@ -76,12 +103,12 @@ OUTER:
 			log.Printf(text)
 		}
 	}
-	log.Printf("Finished readRoutine")
+	os.Stderr.WriteString("Closing read from connection")
+	return nil
 }
 
-func writeRoutine(ctx context.Context, conn net.Conn, wg *sync.WaitGroup, stdin chan string) {
+func Send(ctx context.Context, conn net.Conn, wg *sync.WaitGroup, stdin chan string) error {
 	defer wg.Done()
-	//scanner := bufio.NewScanner(os.Stdin)
 OUTER:
 	for {
 		select {
@@ -98,5 +125,7 @@ OUTER:
 		}
 
 	}
-	log.Printf("Finished writeRoutine")
+
+	os.Stderr.WriteString("Closing write to connection")
+	return nil
 }
