@@ -5,7 +5,7 @@ import "fmt"
 type Logger struct { // TODO
 }
 
-func New(level string) *Logger {
+func New(level string, path string) *Logger {
 	return &Logger{}
 }
 
