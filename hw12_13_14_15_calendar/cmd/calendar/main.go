@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,7 +17,7 @@ import (
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "/Users/reversaidx/job/go/src/hw/hw12_13_14_15_calendar/configs/config.yaml", "Path to configuration file")
+	flag.StringVar(&configFile, "config", "configs/config.yaml", "Path to configuration file")
 }
 
 func main() {
@@ -28,10 +27,11 @@ func main() {
 		printVersion()
 		return
 	}
-	fmt.Println(&configFile)
 	config := NewConfig(configFile)
-	logg := logger.New(config.Logger.Level)
-
+	logg, err := logger.New(config.Logger.Level)
+	if err != nil {
+		panic(err)
+	}
 	storage := memorystorage.New()
 	calendar := app.New(logg, storage)
 

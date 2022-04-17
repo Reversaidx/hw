@@ -1,6 +1,9 @@
 logger:
   level: INFO
-  log_file: ./logfile
 http:
   host: "127.0.0.1"
   port: 8080
+storage:
+  type: memory
+# type: sql
+#  connectionString:
