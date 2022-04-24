@@ -12,6 +12,7 @@ import (
 	"github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/logger"
 	internalhttp "github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/server/http"
 	memorystorage "github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/storage/memory"
+	//sqlstorage "github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/storage/sql"
 )
 
 var configFile string
@@ -32,14 +33,22 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	storage := memorystorage.New()
-	calendar := app.New(logg, storage)
-
-	server := internalhttp.NewServer(logg, calendar)
-
+	//var storage interface{}
+	//if config.Storage.Type == "sql" {
+	//	storage = sqlstorage.New()
+	//	storage.Cone
+	//} else if config.Storage.Type == "memory" {
+	//	storage = memorystorage.New()
+	//} else {
+	//	logg.Error("Unsupported type")
+	//}
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
+
+	storage := memorystorage.New()
+	calendar := app.New(logg, storage)
+	server := internalhttp.NewServer(logg, calendar)
 
 	go func() {
 		<-ctx.Done()

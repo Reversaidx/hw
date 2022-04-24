@@ -10,16 +10,22 @@ import (
 // Организация конфига в main принуждает нас сужать API компонентов, использовать
 // при их конструировании только необходимые параметры, а также уменьшает вероятность циклической зависимости.
 type Config struct {
-	Logger LoggerConf
-	Http   struct {
+	Logger  LoggerConf
+	Storage StorageConf
+	Http    struct {
 		Host string
 		Port int
 	}
+
 	// TODO
 }
 type LoggerConf struct {
 	Level    string
 	log_file string
+}
+type StorageConf struct {
+	connectionString string
+	Type             string
 }
 
 func NewConfig(configFile string) Config {

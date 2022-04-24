@@ -6,11 +6,17 @@ import (
 )
 
 type Store interface {
-	New() error
 	Add(storage.Event) error
 	Change(int, storage.Event) error
 	Delete(int2 int) error
 	List() []storage.Event
+}
+
+func New() Store {
+	return &Storage{
+		data: make(map[int]storage.Event),
+		mu:   sync.RWMutex{},
+	}
 }
 
 type Storage struct {
@@ -18,9 +24,6 @@ type Storage struct {
 	mu   sync.RWMutex
 }
 
-func New() *Store {
-	return &Store
-}
 func (s *Storage) Add(event storage.Event) error {
 	s.mu.Lock()
 	s.data[event.ID] = event
