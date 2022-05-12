@@ -2,10 +2,12 @@ package logger
 
 import (
 	"go.uber.org/zap"
+	"net/http"
 )
 
 type Logger struct { // TODO
-	logs zap.Logger
+	logs    zap.Logger
+	handler http.Handler
 }
 
 func New(level string) (*Logger, error) {
@@ -33,5 +35,3 @@ func (l Logger) Error(msg string) {
 func (l Logger) Warn(msg string) {
 	l.logs.Warn(msg)
 }
-
-// TODO

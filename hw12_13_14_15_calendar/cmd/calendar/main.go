@@ -8,10 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/app"
 	"github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/logger"
 	internalhttp "github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/server/http"
-	memorystorage "github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/storage/memory"
 	//sqlstorage "github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/storage/sql"
 )
 
@@ -46,10 +44,11 @@ func main() {
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	storage := memorystorage.New()
-	calendar := app.New(logg, storage)
-	server := internalhttp.NewServer(logg, calendar)
+	//storage := memorystorage.New()
+	//calendar := app.New(logg, storage)
 
+	server := internalhttp.Server{}
+	server.Start(ctx)
 	go func() {
 		<-ctx.Done()
 
