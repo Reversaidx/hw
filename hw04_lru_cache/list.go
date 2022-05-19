@@ -95,7 +95,6 @@ func (l *list) MoveToFront(i *ListItem) {
 }
 
 type list struct {
-	List  // Remove me after realization.
 	front *ListItem
 	back  *ListItem
 	len   int

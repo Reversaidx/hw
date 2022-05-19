@@ -68,3 +68,7 @@ func NewCache(capacity int) Cache {
 		itemsKey: make(map[*ListItem]Key),
 	}
 }
+func test() {
+	l := NewCache(5)
+	l.Clear()
+}

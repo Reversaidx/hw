@@ -8,16 +8,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/app"
 	"github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/logger"
 	internalhttp "github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/server/http"
-	memorystorage "github.com/Reversaidx/hw/hw12_13_14_15_calendar/internal/storage/memory"
 )
 
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "/etc/calendar/config.toml", "Path to configuration file")
+	flag.StringVar(&configFile, "config", "configs/config.yaml", "Path to configuration file")
 }
 
 func main() {
@@ -27,19 +25,29 @@ func main() {
 		printVersion()
 		return
 	}
-
-	config := NewConfig()
-	logg := logger.New(config.Logger.Level)
-
-	storage := memorystorage.New()
-	calendar := app.New(logg, storage)
-
-	server := internalhttp.NewServer(logg, calendar)
-
+	config := NewConfig(configFile)
+	logg, err := logger.New(config.Logger.Level)
+	if err != nil {
+		panic(err)
+	}
+	// var storage interface{}
+	// if config.Storage.Type == "sql" {
+	//	storage = sqlstorage.New()
+	//	storage.Cone
+	// } else if config.Storage.Type == "memory" {
+	//	storage = memorystorage.New()
+	// } else {
+	//	logg.Error("Unsupported type")
+	// }
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
+	// storage := memorystorage.New()
+	// calendar := app.New(logg, storage)
+
+	server := internalhttp.Server{}
+	server.Start(ctx)
 	go func() {
 		<-ctx.Done()
 
