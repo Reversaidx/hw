@@ -1,8 +1,9 @@
 package logger
 
 import (
-	"go.uber.org/zap"
 	"net/http"
+
+	"go.uber.org/zap"
 )
 
 type Logger struct { // TODO
@@ -22,7 +23,6 @@ func New(level string) (*Logger, error) {
 	}
 	logger.Info("initializing")
 	return &log, nil
-
 }
 
 func (l Logger) Info(msg string) {
@@ -32,6 +32,7 @@ func (l Logger) Info(msg string) {
 func (l Logger) Error(msg string) {
 	l.logs.Error(msg)
 }
+
 func (l Logger) Warn(msg string) {
 	l.logs.Warn(msg)
 }

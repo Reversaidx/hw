@@ -4,22 +4,22 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 type StorageInterface struct { // TODO
 	db *sql.DB
-	//connect
+	// connect
 }
 
 type Storage struct { // TODO
 	db        *sql.DB
 	conString string
-	//connect
+	// connect
 }
 
 func New(conString string) *Storage {
-
 	return &Storage{
 		db:        nil,
 		conString: conString,
@@ -32,7 +32,6 @@ func (s *Storage) Connect(ctx context.Context) (err error) {
 		return fmt.Errorf("cannot open pgx driver: %w", err)
 	}
 	return s.db.PingContext(ctx)
-
 }
 
 func (s *Storage) Close() error {

@@ -6,10 +6,9 @@ import (
 )
 
 type Event struct {
-	ID          int
-	Title       string
-	date        datetime.DateTime
-	notice      string
-	user_id     int
-	time_before time.Time
+	Title      string
+	date       datetime.DateTime
+	notice     string
+	userId     int
+	timeBefore time.Time
 }

@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
+
+	"github.com/spf13/viper"
 )
 
 // При желании конфигурацию можно вынести в internal/config.
@@ -12,20 +13,21 @@ import (
 type Config struct {
 	Logger  LoggerConf
 	Storage StorageConf
-	Http    struct {
+	HTTP    struct {
 		Host string
 		Port int
 	}
 
 	// TODO
 }
+
 type LoggerConf struct {
-	Level    string
-	log_file string
+	Level string
 }
+
 type StorageConf struct {
-	connectionString string
-	Type             string
+	// connectionString string
+	Type string
 }
 
 func NewConfig(configFile string) Config {
@@ -38,7 +40,7 @@ func NewConfig(configFile string) Config {
 	fmt.Println(viper.Get("logger"))
 	Conf := Config{}
 	viper.Unmarshal(&Conf)
-	fmt.Println(Conf.Http.Host)
+	fmt.Println(Conf.HTTP.Host)
 	fmt.Println(viper.AllSettings())
 
 	return Conf

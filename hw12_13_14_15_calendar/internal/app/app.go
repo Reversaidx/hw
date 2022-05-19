@@ -14,7 +14,6 @@ type Storage interface { // TODO
 }
 
 func New(logger Logger, storage Storage) *App {
-
 	return &App{}
 }
 
